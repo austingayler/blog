@@ -1,0 +1,28 @@
+baseURL = "https://yourdomain.com"
+languageCode = "en-us"
+title = "My Blog"
+theme = "PaperMod"
+paginate = 10
+
+[params]
+  author = "Your Name"
+  description = "Personal blog"
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+
+[params.homeInfoParams]
+  Title = "Hi there"
+  Content = "Welcome to my blog."
+
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/yourusername"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

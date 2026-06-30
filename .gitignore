@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# Data / SQLite (local dev state)
+data/*.db
+data/files/
+
+# Hugo build output
+site/public/
+site/resources/_gen/
+
+# OS
+.DS_Store
+Thumbs.db
