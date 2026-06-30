@@ -97,7 +97,7 @@ async def run(user_id: int, bot: Bot) -> None:
 
         # --- Step 4: Derive slug + post directory path ---
         slug = _extract_slug(markdown, today)
-        post_dir = f"content/drafts/{today[:4]}/{today}-{slug}"
+        post_dir = f"content/posts/{today}-{slug}"
         commit_msg = f"draft: add {today}-{slug}"
 
         # --- Step 5: Commit to GitHub ---
