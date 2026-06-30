@@ -7,12 +7,15 @@ Incoming message types handled:
   - Photos (including album groups — caption only on first photo)
   - /start command
   - /done command — immediately triggers processing without waiting for the timer
+  - /status command — shows what's currently queued
 
 All handlers check the user allowlist first; unknown users are ignored.
 """
 
 import logging
 import os
+import time
+from datetime import datetime, timezone
 
 from telegram import Update
 from telegram.ext import ContextTypes
@@ -51,7 +54,8 @@ async def handle_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text(
         "Ready. Send text, voice notes, or photos. "
         "I'll assemble them into a draft post after an hour of inactivity.\n\n"
-        "Send /done at any time to process immediately."
+        "/status — see what's queued\n"
+        "/done — process immediately"
     )
 
 
@@ -72,6 +76,40 @@ async def handle_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if _process_callback:
         import asyncio
         asyncio.ensure_future(_process_callback(user_id))
+
+
+async def handle_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not _allowed(update):
+        return
+    user_id = update.effective_user.id
+    messages = await storage.get_messages(user_id)
+
+    if not messages:
+        await update.message.reply_text("Nothing queued.")
+        return
+
+    counts = {"text": 0, "voice": 0, "photo": 0}
+    for m in messages:
+        counts[m["type"]] = counts.get(m["type"], 0) + 1
+
+    first_ts = datetime.fromtimestamp(messages[0]["timestamp"], tz=timezone.utc).strftime("%H:%M UTC")
+    last_ts = datetime.fromtimestamp(messages[-1]["timestamp"], tz=timezone.utc).strftime("%H:%M UTC")
+
+    timeout = int(os.getenv("GROUPING_TIMEOUT_SECONDS", "3600"))
+    fires_in = int((messages[-1]["timestamp"] + timeout) - time.time())
+    fires_in = max(0, fires_in)
+    mins, secs = divmod(fires_in, 60)
+
+    lines = [f"*{len(messages)} item(s) queued* ({first_ts} – {last_ts})"]
+    if counts["text"]:
+        lines.append(f"  • {counts['text']} text message(s)")
+    if counts["voice"]:
+        lines.append(f"  • {counts['voice']} voice note(s)")
+    if counts["photo"]:
+        lines.append(f"  • {counts['photo']} photo(s)")
+    lines.append(f"\nAuto-processes in {mins}m {secs}s — or send /done to go now.")
+
+    await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

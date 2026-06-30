@@ -80,6 +80,7 @@ def main() -> None:
 
     application.add_handler(CommandHandler("start", handlers.handle_start))
     application.add_handler(CommandHandler("done", handlers.handle_done))
+    application.add_handler(CommandHandler("status", handlers.handle_status))
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.handle_text)
     )
