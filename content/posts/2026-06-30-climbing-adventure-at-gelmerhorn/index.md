@@ -2,7 +2,7 @@
 title: "Climbing Adventure at Gelmerhörn"
 slug: climbing-adventure-at-gelmerhorn
 date: 2026-06-30
-draft: true
+draft: false
 tags:
   - climbing
   - adventure
