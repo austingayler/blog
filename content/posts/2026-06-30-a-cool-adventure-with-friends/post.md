@@ -2,7 +2,7 @@
 title: "A Cool Adventure with Friends"
 slug: a-cool-adventure-with-friends
 date: 2026-06-30
-draft: true
+draft: false
 tags:
   - adventure
   - friends
