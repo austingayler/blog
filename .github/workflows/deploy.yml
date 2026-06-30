@@ -30,7 +30,7 @@ jobs:
           extended: true
 
       - name: Build
-        run: hugo --source site --baseURL "https://austingayler.github.io/bolgrog/"
+        run: hugo --source site --baseURL "https://austingayler.github.io/blog/"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
