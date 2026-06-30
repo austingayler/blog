@@ -47,7 +47,7 @@ async def commit_post(
 
     # 1. Get current HEAD commit SHA
     ref_data = await gh.rest.git.async_get_ref(owner, repo, f"heads/{branch}")
-    head_sha = ref_data.parsed_data.object.sha
+    head_sha = ref_data.parsed_data.object_.sha
 
     # 2. Get base tree SHA from that commit
     commit_data = await gh.rest.git.async_get_commit(owner, repo, head_sha)
