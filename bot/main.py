@@ -62,6 +62,7 @@ async def _post_init(application: Application) -> None:
     handlers.configure_allowlist(allowed_ids)
 
     session.set_callback(_on_session_expired)
+    handlers.set_process_callback(_on_session_expired)
     await session.restore_timers()
 
     logger.info("Bot initialised.")
@@ -78,6 +79,7 @@ def main() -> None:
     )
 
     application.add_handler(CommandHandler("start", handlers.handle_start))
+    application.add_handler(CommandHandler("done", handlers.handle_done))
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.handle_text)
     )

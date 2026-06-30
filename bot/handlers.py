@@ -6,6 +6,7 @@ Incoming message types handled:
   - Voice notes
   - Photos (including album groups — caption only on first photo)
   - /start command
+  - /done command — immediately triggers processing without waiting for the timer
 
 All handlers check the user allowlist first; unknown users are ignored.
 """
@@ -18,6 +19,14 @@ from telegram.ext import ContextTypes
 
 import session
 import storage
+
+# Callback set by main.py so /done can fire processing directly
+_process_callback = None
+
+
+def set_process_callback(cb) -> None:
+    global _process_callback
+    _process_callback = cb
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +50,28 @@ async def handle_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         return
     await update.message.reply_text(
         "Ready. Send text, voice notes, or photos. "
-        "I'll assemble them into a draft post after an hour of inactivity."
+        "I'll assemble them into a draft post after an hour of inactivity.\n\n"
+        "Send /done at any time to process immediately."
     )
+
+
+async def handle_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not _allowed(update):
+        return
+    user_id = update.effective_user.id
+
+    messages = await storage.get_messages(user_id)
+    if not messages:
+        await update.message.reply_text("Nothing queued yet.")
+        return
+
+    session.cancel(user_id)
+    await update.message.reply_text(
+        f"Processing {len(messages)} item(s) now — I'll let you know when the draft is committed."
+    )
+    if _process_callback:
+        import asyncio
+        asyncio.ensure_future(_process_callback(user_id))
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
