@@ -29,7 +29,11 @@ from prompts import SYSTEM_PROMPT, build_user_prompt
 logger = logging.getLogger(__name__)
 
 MAX_FILE_BYTES = 20 * 1024 * 1024  # 20 MB — Telegram Bot API download limit
-openai = AsyncOpenAI()
+
+
+def _openai() -> AsyncOpenAI:
+    """Lazy client — instantiated on first call so the key is read at runtime."""
+    return AsyncOpenAI()
 
 
 async def run(user_id: int, bot: Bot) -> None:
@@ -141,7 +145,7 @@ async def _download_file(bot: Bot, file_id: str) -> bytes | None:
 async def _transcribe(path: Path) -> str:
     try:
         with open(path, "rb") as f:
-            result = await openai.audio.transcriptions.create(
+            result = await _openai().audio.transcriptions.create(
                 model="whisper-1",
                 file=f,
             )
@@ -153,7 +157,7 @@ async def _transcribe(path: Path) -> str:
 
 async def _generate_draft(events: list[dict], date: str) -> str:
     user_prompt = build_user_prompt(events, date)
-    response = await openai.chat.completions.create(
+    response = await _openai().chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT.format(date=date)},

@@ -2,7 +2,8 @@ baseURL = "https://yourdomain.com"
 languageCode = "en-us"
 title = "My Blog"
 theme = "PaperMod"
-paginate = 10
+[pagination]
+  pagerSize = 10
 
 [params]
   author = "Your Name"
