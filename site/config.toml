@@ -2,6 +2,7 @@ baseURL = "https://austingayler.github.io/blog/"
 languageCode = "en-us"
 title = "My Blog"
 theme = "PaperMod"
+contentDir = "../content"
 [pagination]
   pagerSize = 10
 

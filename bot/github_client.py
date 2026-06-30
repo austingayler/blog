@@ -36,6 +36,7 @@ async def commit_post(
     markdown: str,
     images: list[tuple[str, bytes]],  # [(filename, raw_bytes), ...]
     commit_message: str,
+    md_filename: str = "index.md",
 ) -> str:
     """
     Commit post.md and all images under content/drafts/.../post_dir/
@@ -63,7 +64,7 @@ async def commit_post(
         encoding="utf-8",
     )
     tree_entries.append({
-        "path": f"{post_dir}/post.md",
+        "path": f"{post_dir}/{md_filename}",
         "mode": "100644",
         "type": "blob",
         "sha": md_blob.parsed_data.sha,

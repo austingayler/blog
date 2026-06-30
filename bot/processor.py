@@ -106,6 +106,7 @@ async def run(user_id: int, bot: Bot) -> None:
             markdown=markdown,
             images=images,
             commit_message=commit_msg,
+            md_filename="index.md",
         )
 
         # Notify user
