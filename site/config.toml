@@ -1,26 +1,26 @@
 baseURL = "https://austingayler.github.io/blog/"
 languageCode = "en-us"
-title = "My Blog"
+title = "AJ's Blog"
 theme = "PaperMod"
 contentDir = "../content"
 [pagination]
   pagerSize = 10
 
 [params]
-  author = "Your Name"
-  description = "Personal blog"
+  author = "AJ"
+  description = "Musings, beta, whatever"
   ShowReadingTime = true
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
   ShowCodeCopyButtons = true
 
 [params.homeInfoParams]
-  Title = "Hi there"
-  Content = "Welcome to my blog."
+  Title = "AJ's Blog"
+  Content = "Musings, beta, whatever."
 
 [[params.socialIcons]]
   name = "github"
-  url = "https://github.com/yourusername"
+  url = "https://github.com/austingayler"
 
 [taxonomies]
   tag = "tags"
